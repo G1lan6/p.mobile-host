@@ -1,0 +1,584 @@
+import React, { useState } from 'react';
+import { Calendar, CheckCircle2, Circle, ChevronDown, ChevronRight, Clock, Target, Lightbulb } from 'lucide-react';
+
+const ProjectManagementGuide = () => {
+  const [expandedPhases, setExpandedPhases] = useState({
+    ux: true,
+    storyboard: true,
+    mockup: true,
+    ui: true
+  });
+  
+  const [activeTab, setActiveTab] = useState('gantt');
+
+  const timeline = [
+    {
+      id: 'ux',
+      phase: '1. UX (User Experience) Project',
+      duration: '5 hari',
+      color: 'bg-purple-500',
+      startDay: 1,
+      endDay: 5,
+      tasks: [
+        { name: 'Research & User Persona', days: 2, start: 1 },
+        { name: 'User Flow Diagram', days: 2, start: 3 },
+        { name: 'Information Architecture', days: 1, start: 5 }
+      ]
+    },
+    {
+      id: 'storyboard',
+      phase: '2. Storyboard Project',
+      duration: '3 hari',
+      color: 'bg-blue-500',
+      startDay: 6,
+      endDay: 8,
+      tasks: [
+        { name: 'Sketching Key Scenes', days: 2, start: 6 },
+        { name: 'Narration & Refinement', days: 1, start: 8 }
+      ]
+    },
+    {
+      id: 'mockup',
+      phase: '3. Mockup Project',
+      duration: '5 hari',
+      color: 'bg-green-500',
+      startDay: 9,
+      endDay: 13,
+      tasks: [
+        { name: 'Wireframe Low-Fidelity', days: 2, start: 9 },
+        { name: 'High-Fidelity Mockup', days: 2, start: 11 },
+        { name: 'Review & Iteration', days: 1, start: 13 }
+      ]
+    },
+    {
+      id: 'ui',
+      phase: '4. UI (User Interface) Project',
+      duration: '4 hari',
+      color: 'bg-orange-500',
+      startDay: 14,
+      endDay: 17,
+      tasks: [
+        { name: 'Design System & Color Palette', days: 2, start: 14 },
+        { name: 'Component Library', days: 1, start: 16 },
+        { name: 'Documentation', days: 1, start: 17 }
+      ]
+    }
+  ];
+
+  const clickupSetup = {
+    steps: [
+      {
+        title: "1. Buat Workspace & Space",
+        items: [
+          "Login ke ClickUp (clickup.com)",
+          "Klik '+ New Space' di sidebar",
+          "Nama Space: 'UX/UI Project - [Nama Anda]'",
+          "Pilih template: 'Blank Space'"
+        ]
+      },
+      {
+        title: "2. Setup Lists (4 Fase Project)",
+        items: [
+          "Klik '+ New List' di Space",
+          "Buat 4 Lists: 'UX Research', 'Storyboard', 'Mockup Design', 'UI Documentation'",
+          "Set warna berbeda untuk tiap List (sesuai Gantt Chart)"
+        ]
+      },
+      {
+        title: "3. Tambahkan Tasks ke Setiap List",
+        items: [
+          "Klik '+ Add Task' di masing-masing List",
+          "Copy task names dari template checklist",
+          "Set Start Date & Due Date sesuai timeline",
+          "Assign ke diri sendiri"
+        ]
+      },
+      {
+        title: "4. Enable Gantt View",
+        items: [
+          "Klik '...' di pojok kanan atas",
+          "Pilih 'Add View' → 'Gantt'",
+          "Rename view: 'Timeline View'",
+          "Drag tasks untuk adjust dependencies"
+        ]
+      },
+      {
+        title: "5. Setup Custom Fields (Optional)",
+        items: [
+          "Add field: 'Deliverable Type' (Dropdown: PDF/Image/Both)",
+          "Add field: 'Progress %' (Number field)",
+          "Add field: 'Tools Used' (Text: Figma, Adobe XD, dll)"
+        ]
+      }
+    ]
+  };
+
+  const taskTemplates = [
+    {
+      list: "UX Research (Hari 1-5)",
+      color: "purple",
+      tasks: [
+        {
+          name: "Research & User Persona",
+          duration: "2 hari",
+          checklist: [
+            "Tentukan target audience (usia, profesi, kebiasaan)",
+            "Buat 2-3 user persona lengkap (foto, nama, background, goals, pain points)",
+            "Create empathy map untuk masing-masing persona",
+            "Document pain points dan user needs"
+          ],
+          deliverable: "User Persona Document (PDF)"
+        },
+        {
+          name: "User Flow Diagram",
+          duration: "2 hari",
+          checklist: [
+            "Mapping user journey dari entry point sampai goal",
+            "Buat flowchart di Draw.io/Figma/Miro",
+            "Identifikasi decision points dan alternative paths",
+            "Review flow apakah logical dan efficient"
+          ],
+          deliverable: "User Flow Diagram (PDF/PNG)"
+        },
+        {
+          name: "Information Architecture",
+          duration: "1 hari",
+          checklist: [
+            "Buat sitemap/structure navigasi aplikasi",
+            "Tentukan hierarchy menu (primary, secondary navigation)",
+            "Document content organization",
+            "Validasi apakah mudah dipahami user"
+          ],
+          deliverable: "IA Document (PDF)"
+        }
+      ]
+    },
+    {
+      list: "Storyboard (Hari 6-8)",
+      color: "blue",
+      tasks: [
+        {
+          name: "Sketching Key Scenes",
+          duration: "2 hari",
+          checklist: [
+            "Pilih 6-8 key moments dari user journey",
+            "Sketch masing-masing scene (bisa hand-drawn/digital)",
+            "Fokus pada interaction dan emotion, bukan detail visual",
+            "Pastikan ada clear beginning, middle, end"
+          ],
+          deliverable: "Storyboard Sketches"
+        },
+        {
+          name: "Narration & Refinement",
+          duration: "1 hari",
+          checklist: [
+            "Tambahkan narasi/caption di setiap frame",
+            "Jelaskan apa yang user lakukan dan rasakan",
+            "Review flow apakah telling a compelling story",
+            "Finalize dan rapikan presentasi"
+          ],
+          deliverable: "Final Storyboard (PDF)"
+        }
+      ]
+    },
+    {
+      list: "Mockup Design (Hari 9-13)",
+      color: "green",
+      tasks: [
+        {
+          name: "Wireframe Low-Fidelity",
+          duration: "2 hari",
+          checklist: [
+            "Buat wireframe hitam-putih untuk 5-7 key screens",
+            "Fokus pada layout, hierarchy, spacing",
+            "Jangan pikirkan warna/imagery dulu",
+            "Review dengan teman untuk feedback"
+          ],
+          deliverable: "Wireframes (PDF)"
+        },
+        {
+          name: "High-Fidelity Mockup",
+          duration: "2 hari",
+          checklist: [
+            "Import wireframes ke Figma/Adobe XD",
+            "Apply color scheme, typography, imagery",
+            "Buat minimal 7-10 screens (splash, onboarding, home, features, profile)",
+            "Ensure consistency across all screens"
+          ],
+          deliverable: "High-Fi Mockups (PDF/Figma Link)"
+        },
+        {
+          name: "Review & Iteration",
+          duration: "1 hari",
+          checklist: [
+            "Self-review: accessibility, readability, alignment",
+            "Check semua text readable, buttons clear",
+            "Revisi berdasarkan feedback",
+            "Export final mockups (PNG 2x untuk clarity)"
+          ],
+          deliverable: "Final Mockups (PDF)"
+        }
+      ]
+    },
+    {
+      list: "UI Documentation (Hari 14-17)",
+      color: "orange",
+      tasks: [
+        {
+          name: "Design System & Color Palette",
+          duration: "2 hari",
+          checklist: [
+            "Define Primary, Secondary, Accent colors (dengan HEX codes)",
+            "Create color variations (light, dark versions)",
+            "Define semantic colors (success, error, warning, info)",
+            "Document color usage guidelines"
+          ],
+          deliverable: "Color Palette Document"
+        },
+        {
+          name: "Component Library",
+          duration: "1 hari",
+          checklist: [
+            "Document all UI components: buttons, inputs, cards, icons",
+            "Show all states: default, hover, active, disabled",
+            "Define spacing system (8px grid recommended)",
+            "Create typography scale (H1-H6, body, caption dengan sizes)"
+          ],
+          deliverable: "Component Library (PDF)"
+        },
+        {
+          name: "Final Documentation",
+          duration: "1 hari",
+          checklist: [
+            "Compile semua dalam 1 dokumen PDF yang rapi",
+            "Add table of contents",
+            "Include design principles & rationale",
+            "Add dos and don'ts examples"
+          ],
+          deliverable: "Complete UI Guidelines (PDF)"
+        }
+      ]
+    }
+  ];
+
+  const timeManagementTips = [
+    {
+      title: "🎯 Daily Goals",
+      tips: [
+        "Set 2-3 specific tasks per hari, jangan lebih",
+        "Prioritize tasks yang paling critical first",
+        "Use Pomodoro: 25 menit fokus, 5 menit break",
+        "Review progress setiap end of day"
+      ]
+    },
+    {
+      title: "⏰ Time Blocking",
+      tips: [
+        "Pagi (09:00-12:00): Deep work untuk design/research",
+        "Siang (13:00-15:00): Review, iteration, documentation",
+        "Sore (15:00-17:00): Finalization, export files",
+        "Set buffer 1-2 hari untuk unexpected delays"
+      ]
+    },
+    {
+      title: "📊 Progress Tracking",
+      tips: [
+        "Update status di ClickUp setiap selesai task",
+        "Screenshot progress untuk documentation",
+        "Keep version history (v1, v2, v3 untuk iterations)",
+        "Backup files regularly ke cloud (Google Drive/Dropbox)"
+      ]
+    },
+    {
+      title: "🚀 Productivity Hacks",
+      tips: [
+        "Eliminate distractions: off notifikasi saat deep work",
+        "Use templates: jangan start from scratch",
+        "Get early feedback: share WIP dengan teman",
+        "Celebrate small wins: treat yourself setiap milestone!"
+      ]
+    }
+  ];
+
+  const totalDays = 17;
+  const days = Array.from({ length: totalDays }, (_, i) => i + 1);
+
+  const togglePhase = (phaseId) => {
+    setExpandedPhases(prev => ({
+      ...prev,
+      [phaseId]: !prev[phaseId]
+    }));
+  };
+
+  const getColorClass = (color) => {
+    const colors = {
+      purple: 'bg-purple-100 text-purple-700 border-purple-300',
+      blue: 'bg-blue-100 text-blue-700 border-blue-300',
+      green: 'bg-green-100 text-green-700 border-green-300',
+      orange: 'bg-orange-100 text-orange-700 border-orange-300'
+    };
+    return colors[color] || colors.purple;
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <Calendar className="w-8 h-8 text-blue-600" />
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Complete Project Guide</h1>
+          </div>
+          <p className="text-gray-600">Gantt Chart, ClickUp Setup & Task Templates</p>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-lg shadow-lg mb-6">
+          <div className="flex border-b overflow-x-auto">
+            <button
+              onClick={() => setActiveTab('gantt')}
+              className={`px-6 py-4 font-medium transition-colors whitespace-nowrap ${
+                activeTab === 'gantt'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              📊 Gantt Chart
+            </button>
+            <button
+              onClick={() => setActiveTab('clickup')}
+              className={`px-6 py-4 font-medium transition-colors whitespace-nowrap ${
+                activeTab === 'clickup'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              ⚙️ ClickUp Setup
+            </button>
+            <button
+              onClick={() => setActiveTab('tasks')}
+              className={`px-6 py-4 font-medium transition-colors whitespace-nowrap ${
+                activeTab === 'tasks'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              ✅ Task Details
+            </button>
+            <button
+              onClick={() => setActiveTab('tips')}
+              className={`px-6 py-4 font-medium transition-colors whitespace-nowrap ${
+                activeTab === 'tips'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              💡 Time Management
+            </button>
+          </div>
+        </div>
+
+        {/* Gantt Chart Tab */}
+        {activeTab === 'gantt' && (
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="p-6 bg-gray-50 border-b">
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Timeline Overview</h2>
+              <p className="text-gray-600">Total Duration: <span className="font-semibold text-blue-600">17 Hari Kerja</span></p>
+            </div>
+            
+            <div className="overflow-x-auto">
+              {/* Timeline Header */}
+              <div className="flex border-b min-w-max">
+                <div className="w-80 p-4 bg-gray-50 font-semibold text-gray-700 border-r sticky left-0 z-10">
+                  Phase & Tasks
+                </div>
+                <div className="flex">
+                  {days.map(day => (
+                    <div
+                      key={day}
+                      className="w-12 p-2 text-center text-xs font-medium text-gray-600 border-r"
+                    >
+                      D{day}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Timeline Body */}
+              <div className="divide-y">
+                {timeline.map((phase) => (
+                  <div key={phase.id}>
+                    {/* Phase Row */}
+                    <div className="flex hover:bg-gray-50 transition-colors min-w-max">
+                      <div className="w-80 p-4 border-r sticky left-0 bg-white z-10">
+                        <button
+                          onClick={() => togglePhase(phase.id)}
+                          className="flex items-center gap-2 w-full text-left group"
+                        >
+                          {expandedPhases[phase.id] ? (
+                            <ChevronDown className="w-4 h-4 text-gray-400" />
+                          ) : (
+                            <ChevronRight className="w-4 h-4 text-gray-400" />
+                          )}
+                          <div className="flex-1">
+                            <div className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+                              {phase.phase}
+                            </div>
+                            <div className="text-sm text-gray-500">{phase.duration}</div>
+                          </div>
+                        </button>
+                      </div>
+                      <div className="flex items-center p-2">
+                        <div className="flex relative">
+                          {days.map(day => (
+                            <div key={day} className="w-12 h-12 border-r relative">
+                              {day >= phase.startDay && day <= phase.endDay && (
+                                <div
+                                  className={`absolute inset-y-1 inset-x-0.5 ${phase.color} rounded opacity-80 hover:opacity-100 transition-opacity`}
+                                />
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Task Rows */}
+                    {expandedPhases[phase.id] && phase.tasks.map((task, idx) => (
+                      <div key={idx} className="flex bg-gray-50 hover:bg-gray-100 transition-colors min-w-max">
+                        <div className="w-80 p-3 pl-12 border-r sticky left-0 bg-gray-50 z-10">
+                          <div className="flex items-center gap-2">
+                            <Circle className="w-3 h-3 text-gray-400" />
+                            <span className="text-sm text-gray-700">{task.name}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center p-2">
+                          <div className="flex">
+                            {days.map(day => (
+                              <div key={day} className="w-12 h-8 border-r relative">
+                                {day >= task.start && day < task.start + task.days && (
+                                  <div
+                                    className={`absolute inset-y-1 inset-x-1 ${phase.color} rounded-sm opacity-60`}
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ClickUp Setup Tab */}
+        {activeTab === 'clickup' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Step-by-Step ClickUp Setup</h2>
+              <div className="space-y-6">
+                {clickupSetup.steps.map((step, idx) => (
+                  <div key={idx} className="border-l-4 border-blue-500 pl-4">
+                    <h3 className="font-semibold text-gray-800 mb-3">{step.title}</h3>
+                    <ul className="space-y-2">
+                      {step.items.map((item, itemIdx) => (
+                        <li key={itemIdx} className="flex items-start gap-2 text-gray-600">
+                          <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow p-6 border border-blue-200">
+              <div className="flex items-start gap-3">
+                <Lightbulb className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-2">Pro Tips</h3>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li>• Gunakan keyboard shortcuts: "T" untuk create task, "C" untuk comment</li>
+                    <li>• Set reminders H-1 sebelum deadline untuk avoid last-minute rush</li>
+                    <li>• Gunakan status "Blocked" jika waiting for feedback/resources</li>
+                    <li>• Share ClickUp link dengan dosen untuk real-time progress tracking</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Task Details Tab */}
+        {activeTab === 'tasks' && (
+          <div className="space-y-6">
+            {taskTemplates.map((section, idx) => (
+              <div key={idx} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div className={`p-4 border-b-4 ${getColorClass(section.color)}`}>
+                  <h2 className="text-xl font-bold">{section.list}</h2>
+                </div>
+                <div className="p-6 space-y-6">
+                  {section.tasks.map((task, taskIdx) => (
+                    <div key={taskIdx} className="border-l-4 border-gray-300 pl-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="font-semibold text-gray-800 text-lg">{task.name}</h3>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Clock className="w-4 h-4 text-gray-400" />
+                            <span className="text-sm text-gray-600">{task.duration}</span>
+                          </div>
+                        </div>
+                        <Target className="w-5 h-5 text-blue-500" />
+                      </div>
+                      <div className="mb-3">
+                        <p className="text-sm font-medium text-gray-700 mb-2">Checklist:</p>
+                        <ul className="space-y-2">
+                          {task.checklist.map((item, itemIdx) => (
+                            <li key={itemIdx} className="flex items-start gap-2 text-sm text-gray-600">
+                              <span className="text-gray-400 mt-0.5">□</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="bg-gray-50 rounded p-3 border border-gray-200">
+                        <p className="text-sm font-medium text-gray-700">
+                          📦 Deliverable: <span className="text-blue-600">{task.deliverable}</span>
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Time Management Tab */}
+        {activeTab === 'tips' && (
+          <div className="grid md:grid-cols-2 gap-6">
+            {timeManagementTips.map((section, idx) => (
+              <div key={idx} className="bg-white rounded-lg shadow-lg p-6">
+                <h3 className="text-lg font-bold text-gray-800 mb-4">{section.title}</h3>
+                <ul className="space-y-3">
+                  {section.tips.map((tip, tipIdx) => (
+                    <li key={tipIdx} className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-600 text-sm">{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ProjectManagementGuide;
